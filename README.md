@@ -10,15 +10,15 @@ Prequisites
 * Mac or Linux development machine or VM
 * MongoDB: http://www.mongodb.org/downloads
 * Git: http://git-scm.com/download
-** You probably already have it, try typing `git` on the command line
+    * You probably already have it, try typing `git` on the command line
 * Python 2.6 or 2.7: http://www.python.org/getit/releases/2.7.3/
-** You probably have this, too, try `python --version` on the command line
+    * You probably have this, too, try `python --version` on the command line
 * Pip, the Python package manager:
   http://www.pip-installer.org/en/latest/installing.html
 * Motor, my experimental asynchronous MongoDB driver for Tornado:
-** git clone https://github.com/ajdavis/mongo-python-driver
-** cd mongo-python-driver
-** git checkout motor
+    * git clone https://github.com/ajdavis/mongo-python-driver
+    * cd mongo-python-driver
+    * git checkout motor
 
 Installation
 ------------
