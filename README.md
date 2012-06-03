@@ -1,8 +1,7 @@
 Chirp
 =====
 
-A trivial Twitter clone, example asynchronous Python / MongoDB app for
-WindyCityDB 2012 workshop.
+A trivial Twitter clone, example asynchronous Python / MongoDB app.
 
 Prequisites
 -----------
