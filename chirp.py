@@ -140,6 +140,9 @@ class NewChirpHandler(tornado.web.RequestHandler):
         Insert a new chirp in the capped collection
         """
         msg = self.request.body
+        username = self.get_secure_cookie('username')
+        if not username:
+            raise tornado.web.HTTPError(403)
 
         # Async insert; callback is executed when insert completes
         self.settings['motor_db'].chirps.insert(
@@ -147,6 +150,7 @@ class NewChirpHandler(tornado.web.RequestHandler):
                 'msg': msg,
                 'ts': datetime.datetime.utcnow(),
                 '_id': ObjectId(),
+                'u': username,
             },
             callback=self._on_response
         )
@@ -166,6 +170,22 @@ class ClearChirpsHandler(tornado.web.RequestHandler):
         chirps.clear()
         create_collection()
         self.settings['cursor_manager'].emit('cleared', {})
+
+
+class LoginHandler(tornado.web.RequestHandler):
+    def post(self):
+        """
+        Log in.
+        """
+        self.set_secure_cookie('username', self.get_argument('username'))
+
+
+class LogoutHandler(tornado.web.RequestHandler):
+    def post(self):
+        """
+        Log out.
+        """
+        self.clear_all_cookies()
 
 
 if __name__ == '__main__':
@@ -205,11 +225,14 @@ if __name__ == '__main__':
             (r'/chirps', ChirpsHandler),
             (r'/new', NewChirpHandler),
             (r'/clear', ClearChirpsHandler),
+            (r'/login', LoginHandler),
+            (r'/logout', LogoutHandler),
             (r'/()', tornado.web.StaticFileHandler, {'path': 'static/index.html'}),
         ]),
 
         static_path='static',
         socket_io_port = 8001,
+        cookie_secret='secret',
 
         motor_db=motor_db,
         cursor_manager=cursor_manager,

@@ -1,14 +1,53 @@
 $(function() {
-    var $form                   = $('#new_chirp'),
-        $text_input             = $('#text_input'),
+    var $chirpform              = $('#new_chirp'),
+        $chirpinput             = $('#text_input'),
+        $userform               = $('#login'),
+        $logoutform             = $('#logout'),
         $new_chirp_success      = $('#new_chirp_success'),
         socket                  = io.connect();
 
-    // TODO: organize
+    $userform.submit(function() {
+        var username = $('#username').val();
+        $.ajax({
+            type: 'POST',
+            url:  '/login',
+            data: {'username': username},
+
+            success: function() {
+                $('#username').val('');
+                alert('Logged in!');
+                $userform.slideUp();
+                $logoutform.slideDown();
+                $chirpform.slideDown();
+            },
+
+            error: function() {
+                alert("Error logging in");
+            }
+        });
+
+        return false;
+    });
+
+    $logoutform.submit(function() {
+        $.ajax({
+            type: 'POST',
+            url:  '/logout',
+            success: function() {
+                $userform.slideDown();
+                $logoutform.slideUp();
+                $chirpform.slideUp();
+            }
+        })
+
+        return false;
+    });
+
     var Chirp = Backbone.Model.extend({
         defaults: {
             ts:  'none',
-            msg: 'none'
+            msg: 'none',
+            u: 'anonymous'
         }
     });
 
@@ -63,15 +102,15 @@ $(function() {
         }
     });
 
-    $form.submit(function() {
-        var msg = $text_input.val();
+    $chirpform.submit(function() {
+        var msg = $chirpinput.val();
         $.ajax({
             type: 'POST',
             url:  '/new',
             data: msg,
 
-            success: function(data, textStatus, jqXHR) {
-                $text_input.val('');
+            success: function() {
+                $chirpinput.val('');
                 $new_chirp_success.fadeIn(
                     // Callback to fade the success indicator out once
                     // it's completed fading in
@@ -82,7 +121,7 @@ $(function() {
             error: function(jqXHR, textStatus, errorThrown) {
                 $new_chirp_success.hide();
 
-                alert("Error saving chirp: " + jqXHR.responseText);
+                alert("Error saving chirp: " + errorThrown);
             }
         });
 
