@@ -42,7 +42,7 @@ Usage
 Start MongoDB
 
     mkdir data
-    mongod --dbpath data --logpath data/mongod.log --port 8000 --fork
+    mongod --dbpath data --logpath data/mongod.log --fork
 
 Set your PYTHONPATH to include PyMongo and Motor:
 
