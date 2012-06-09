@@ -6,6 +6,19 @@ $(function() {
         $new_chirp_success      = $('#new_chirp_success'),
         socket                  = io.connect();
 
+    function loggedIn() {
+        $('#logout_username', $logoutform).html($.cookie('username'));
+        $userform.slideUp();
+        $logoutform.slideDown();
+        $chirpform.slideDown();
+    }
+
+    function loggedOut() {
+        $userform.slideDown();
+        $logoutform.slideUp();
+        $chirpform.slideUp();
+    }
+
     $userform.submit(function() {
         var username = $('#username').val();
         $.ajax({
@@ -14,14 +27,13 @@ $(function() {
             data: {'username': username},
 
             success: function() {
+                loggedIn();
                 $('#username').val('');
                 alert('Logged in!');
-                $userform.slideUp();
-                $logoutform.slideDown();
-                $chirpform.slideDown();
             },
 
             error: function() {
+                loggedOut();
                 alert("Error logging in");
             }
         });
@@ -30,16 +42,7 @@ $(function() {
     });
 
     $logoutform.submit(function() {
-        $.ajax({
-            type: 'POST',
-            url:  '/logout',
-            success: function() {
-                $userform.slideDown();
-                $logoutform.slideUp();
-                $chirpform.slideUp();
-            }
-        })
-
+        $.ajax({ type: 'POST', url:  '/logout', success: loggedOut });
         return false;
     });
 
@@ -88,10 +91,10 @@ $(function() {
 
     var chirps_view = new ChirpsView();
 
-    socket.on('connect',    function()    { socket.emit('get_chirps');  });
-    socket.on('cleared',    function()    { chirps.reset();             });
-    socket.on('app_error',  function(msg) { alert(msg);                 });
-    socket.on('disconnect', function()    { socket = io.connect();      });
+    socket.on('connect',    function()    { socket.emit('get_chirps');      });
+    socket.on('cleared',    function()    { chirps.reset();                 });
+    socket.on('app_error',  function(msg) { alert(msg);                     });
+    socket.on('reconnect',  function()    { chirps.reset(); chirps.fetch(); });
 
     socket.on('chirps', function (json) {
         var data = JSON.parse(json);
@@ -147,4 +150,11 @@ $(function() {
             });
         }
     });
+
+    // Initial setup
+    if ($.cookie('username')) {
+        loggedIn();
+    } else {
+        loggedOut();
+    }
 });

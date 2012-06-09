@@ -140,8 +140,9 @@ class NewChirpHandler(tornado.web.RequestHandler):
         Insert a new chirp in the capped collection
         """
         msg = self.request.body
-        username = self.get_secure_cookie('username')
-        if not username:
+        username = self.get_cookie('username')
+        decrypted_username = self.get_secure_cookie('auth')
+        if not username or username != decrypted_username:
             raise tornado.web.HTTPError(403)
 
         # Async insert; callback is executed when insert completes
@@ -177,7 +178,9 @@ class LoginHandler(tornado.web.RequestHandler):
         """
         Log in.
         """
-        self.set_secure_cookie('username', self.get_argument('username'))
+        username = self.get_argument('username')
+        self.set_cookie('username', username)
+        self.set_secure_cookie('auth', username)
 
 
 class LogoutHandler(tornado.web.RequestHandler):
