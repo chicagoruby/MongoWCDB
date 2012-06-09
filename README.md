@@ -15,9 +15,7 @@ Prequisites
 * Pip, the Python package manager:
   http://www.pip-installer.org/en/latest/installing.html
 * Motor, my experimental asynchronous MongoDB driver for Tornado:
-    * git clone https://github.com/ajdavis/mongo-python-driver
-    * cd mongo-python-driver
-    * git checkout motor
+    * git clone --branch motor https://github.com/ajdavis/mongo-python-driver
 
 Installation
 ------------
@@ -29,7 +27,7 @@ Get the example app:
 
 Install required Python packages:
 
-    pip install -I -r chirp.reqs
+    pip install -r chirp.reqs
 
 This installs:
 * Tornado, an asynchronous Python web framework
@@ -58,7 +56,9 @@ started.
 Visit http://localhost:8001/
 
 Enter something in the 'New Chirp' box. Try it in two or three browser windows
-at once!
+at once and see them all update immediately!
 
 In a new window, type `mongo` to open the MongoDB shell. Type `db.chirps.find()`
-to see your collection of chirps.
+to see your collection of chirps. Try this in the MongoDB shell:
+
+    
