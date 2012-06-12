@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelavent variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/rth/Code/MongoDB/WindyCityDB/windycitydb_env"
+VIRTUAL_ENV="/Users/rth/Code/MongoDB/MongoWCDB/windycitydb_env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
